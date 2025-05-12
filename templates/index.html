@@ -1,136 +1,132 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Verificação de Phishing</title>
+    <title>Verificação de URL Suspeita</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
+        body { font-family: Arial, sans-serif; margin: 40px; display: flex; }
+        main { flex: 2; }
+        aside {
+            flex: 1;
+            margin-left: 40px;
+            padding: 20px;
+            border-left: 1px solid #ccc;
+        }
         input[type="text"] { width: 300px; padding: 8px; margin-right: 10px; }
-        button { padding: 8px 12px; }
+        button { padding: 8px 12px; margin-top: 10px; }
         table { border-collapse: collapse; margin-top: 20px; width: 100%; max-width: 700px; }
         th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
         .seguro { color: green; font-weight: bold; }
         .suspeito { color: red; font-weight: bold; }
         h1, h2 { color: #333; }
+        ul { padding-left: 20px; }
     </style>
 </head>
 <body>
-    <h1>Verificação de URL Suspeita</h1>
-    <form method="POST">
-        <input type="text" name="url" placeholder="Digite a URL para verificar" required>
-        <button type="submit">Verificar</button>
-    </form>
+    <main>
+        <h1>Verificação de URL Suspeita</h1>
+        <form method="POST">
+            <input type="text" name="url" placeholder="Digite a URL para verificar" required>
+            <button type="submit">Verificar</button>
+        </form>
 
-    <div style="margin-top: 20px;">
-        <a href="/historico" style="text-decoration: none;">
-            <button type="button">📊 Ver Histórico de Análises</button>
-        </a>
-    </div>
+        <div style="margin-top: 20px;">
+            <a href="/historico" style="text-decoration: none;">
+                <button type="button">📊 Ver Histórico de Análises</button>
+            </a>
+        </div>
 
-    {% if resultado %}
-        <h2>Resultado da Verificação:</h2>
-        <table>
-            <tr><th>Critério</th><th>Status</th></tr>
+        {% if resultado %}
+            <h2>Resultado da Verificação:</h2>
+            <table>
+                <tr><th>Critério</th><th>Status</th></tr>
 
-            <tr>
-                <td>Presente em lista de phishing</td>
-                <td class="{{ 'suspeito' if resultado['phishing_list'] else 'seguro' }}">
-                    {{ 'Suspeito' if resultado['phishing_list'] else 'Seguro' }}
-                </td>
-            </tr>
+                <tr><td>Presente em lista de phishing</td>
+                    <td class="{{ 'suspeito' if resultado['phishing_list'] else 'seguro' }}">
+                        {{ 'Suspeito' if resultado['phishing_list'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Uso de números no domínio</td>
+                    <td class="{{ 'suspeito' if resultado['numeros_no_dominio'] else 'seguro' }}">
+                        {{ 'Suspeito' if resultado['numeros_no_dominio'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Subdomínios excessivos</td>
+                    <td class="{{ 'suspeito' if resultado['subdominios_excessivos'] else 'seguro' }}">
+                        {{ 'Suspeito' if resultado['subdominios_excessivos'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Caracteres especiais na URL</td>
+                    <td class="{{ 'suspeito' if resultado['caracteres_especiais'] else 'seguro' }}">
+                        {{ 'Suspeito' if resultado['caracteres_especiais'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>DNS Dinâmico</td>
+                    <td class="{{ 'suspeito' if resultado['dns_dinamico'] else 'seguro' }}">
+                        {{ 'Suspeito' if resultado['dns_dinamico'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Idade do domínio</td><td>{{ resultado['idade_dominio'] }}</td></tr>
+                <tr><td>Certificado SSL válido</td>
+                    <td class="{{ 'suspeito' if not resultado['ssl_valido'] else 'seguro' }}">
+                        {{ 'Suspeito' if not resultado['ssl_valido'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Nome do domínio confere com o certificado</td>
+                    <td class="{{ 'suspeito' if not resultado['ssl_correspondente'] else 'seguro' }}">
+                        {{ 'Suspeito' if not resultado['ssl_correspondente'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Redireciona para outro domínio</td>
+                    <td class="{{ 'suspeito' if resultado['redireciona_para_outro_dominio'] else 'seguro' }}">
+                        {{ 'Suspeito' if resultado['redireciona_para_outro_dominio'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Redirecionamentos múltiplos</td>
+                    <td class="{{ 'suspeito' if resultado['redirecionamentos_multiplos'] else 'seguro' }}">
+                        {{ 'Suspeito' if resultado['redirecionamentos_multiplos'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Similar a marca conhecida</td>
+                    <td class="{{ 'suspeito' if resultado['similar_a_marca_conhecida'] else 'seguro' }}">
+                        {{ 'Suspeito' if resultado['similar_a_marca_conhecida'] else 'Seguro' }}
+                    </td>
+                </tr>
+                <tr><td>Formulário detectado</td>
+                    <td class="{{ 'suspeito' if resultado['formulario_detectado'] else 'seguro' }}">
+                        {{ 'Detectado' if resultado['formulario_detectado'] else 'Não detectado' }}
+                    </td>
+                </tr>
+                <tr><td>Campo sensível (senha, e-mail) detectado</td>
+                    <td class="{{ 'suspeito' if resultado['campo_sensivel_detectado'] else 'seguro' }}">
+                        {{ 'Detectado' if resultado['campo_sensivel_detectado'] else 'Não detectado' }}
+                    </td>
+                </tr>
+                <tr><td>Palavras-chave suspeitas</td>
+                    <td class="{{ 'suspeito' if resultado['palavras_sensiveis_detectadas'] != 'Nenhuma' else 'seguro' }}">
+                        {{ resultado['palavras_sensiveis_detectadas'] }}
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+    </main>
 
-            <tr>
-                <td>Uso de números no domínio</td>
-                <td class="{{ 'suspeito' if resultado['numeros_no_dominio'] else 'seguro' }}">
-                    {{ 'Suspeito' if resultado['numeros_no_dominio'] else 'Seguro' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Subdomínios excessivos</td>
-                <td class="{{ 'suspeito' if resultado['subdominios_excessivos'] else 'seguro' }}">
-                    {{ 'Suspeito' if resultado['subdominios_excessivos'] else 'Seguro' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Caracteres especiais na URL</td>
-                <td class="{{ 'suspeito' if resultado['caracteres_especiais'] else 'seguro' }}">
-                    {{ 'Suspeito' if resultado['caracteres_especiais'] else 'Seguro' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>DNS Dinâmico</td>
-                <td class="{{ 'suspeito' if resultado['dns_dinamico'] else 'seguro' }}">
-                    {{ 'Suspeito' if resultado['dns_dinamico'] else 'Seguro' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Idade do domínio</td>
-                <td>{{ resultado['idade_dominio'] }}</td>
-            </tr>
-
-            <tr>
-                <td>Certificado SSL válido</td>
-                <td class="{{ 'suspeito' if not resultado['ssl_valido'] else 'seguro' }}">
-                    {{ 'Suspeito' if not resultado['ssl_valido'] else 'Seguro' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Nome do domínio confere com o certificado</td>
-                <td class="{{ 'suspeito' if not resultado['ssl_correspondente'] else 'seguro' }}">
-                    {{ 'Suspeito' if not resultado['ssl_correspondente'] else 'Seguro' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Redireciona para outro domínio</td>
-                <td class="{{ 'suspeito' if resultado['redireciona_para_outro_dominio'] else 'seguro' }}">
-                    {{ 'Suspeito' if resultado['redireciona_para_outro_dominio'] else 'Seguro' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Redirecionamentos múltiplos</td>
-                <td class="{{ 'suspeito' if resultado['redirecionamentos_multiplos'] else 'seguro' }}">
-                    {{ 'Suspeito' if resultado['redirecionamentos_multiplos'] else 'Seguro' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Similar a marca conhecida</td>
-                <td class="{{ 'suspeito' if resultado['similar_a_marca_conhecida'] else 'seguro' }}">
-                    {{ 'Suspeito' if resultado['similar_a_marca_conhecida'] else 'Seguro' }}
-                </td>
-            </tr>
-
-
-            <tr>
-                <td>Formulário detectado</td>
-                <td class="{{ 'suspeito' if resultado['formulario_detectado'] else 'seguro' }}">
-                    {{ 'Detectado' if resultado['formulario_detectado'] else 'Não detectado' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Campo sensível (senha, e-mail) detectado</td>
-                <td class="{{ 'suspeito' if resultado['campo_sensivel_detectado'] else 'seguro' }}">
-                    {{ 'Detectado' if resultado['campo_sensivel_detectado'] else 'Não detectado' }}
-                </td>
-            </tr>
-
-            <tr>
-                <td>Palavras-chave suspeitas</td>
-                <td class="{{ 'suspeito' if resultado['palavras_sensiveis_detectadas'] != 'Nenhuma' else 'seguro' }}">
-                    {{ resultado['palavras_sensiveis_detectadas'] }}
-                </td>
-            </tr>
-
-
-
-        </table>
-    {% endif %}
+    <aside>
+        <h3>Critérios Analisados</h3>
+        <ul>
+            <li><strong>Lista de phishing:</strong> domínios conhecidos por phishing.</li>
+            <li><strong>Números no domínio:</strong> substituições visuais como "g00gle".</li>
+            <li><strong>Subdomínios excessivos:</strong> tentativa de enganar com nomes longos.</li>
+            <li><strong>Caracteres especiais:</strong> uso de "@" ou "%", comum em URLs falsas.</li>
+            <li><strong>DNS dinâmico:</strong> serviços gratuitos usados para esconder origem.</li>
+            <li><strong>Idade do domínio:</strong> domínios novos são mais suspeitos.</li>
+            <li><strong>SSL válido:</strong> segurança básica com HTTPS e certificado válido.</li>
+            <li><strong>Domínio no certificado:</strong> confirma que o site é quem diz ser.</li>
+            <li><strong>Redirecionamento:</strong> URLs que mudam de destino podem esconder fraudes.</li>
+            <li><strong>Marca parecida:</strong> tentativa de se passar por sites legítimos.</li>
+            <li><strong>Formulário:</strong> captura de dados pode ser tentativa de roubo.</li>
+            <li><strong>Campo sensível:</strong> login, email ou senha inseridos no site.</li>
+            <li><strong>Palavras-chave:</strong> termos como “senha” ou “cartão” no conteúdo.</li>
+        </ul>
+    </aside>
 </body>
 </html>
