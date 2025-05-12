@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Histórico de Verificações</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 40px; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: left; }
+        .suspeito { color: red; font-weight: bold; }
+        .seguro { color: green; font-weight: bold; }
+        canvas { height: 300px !important; }
+    </style>
+</head>
+<body>
+    <h1>Histórico de URLs Verificadas</h1>
+    <div style="margin-bottom: 20px;">
+        <a href="/" style="text-decoration: none;">
+            <button type="button">⬅️ Voltar para pesquisa</button>
+        </a>
+        <a href="/exportar" style="text-decoration: none; margin-left: 10px;">
+            <button type="button">📁 Exportar como CSV</button>
+        </a>
+    </div>
+
+    {% if historico %}
+    <table>
+        <thead>
+            <tr>
+                <th>URL</th>
+                <th>Phishing list</th>
+                <th>Números no domínio</th>
+                <th>Subdomínios excessivos</th>
+                <th>Caracteres especiais</th>
+                <th>DNS dinâmico</th>
+                <th>Idade do domínio</th>
+                <th>SSL válido</th>
+                <th>SSL correspondente</th>
+                <th>Redireciona de domínio</th>
+                <th>Redirecionamentos múltiplos</th>
+                <th>Similaridade com marca</th>
+                <th>Formulário</th>
+                <th>Campo sensível</th>
+                <th>Palavras-chave</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set detectaveis = ["formulario_detectado", "campo_sensivel_detectado"] %}
+            {% set texto_livre = ["idade_dominio", "palavras_sensiveis_detectadas"] %}
+
+            {% for r in historico %}
+            <tr>
+                <td>{{ r["url_analisada"] }}</td>
+                {% for key in [
+                    "phishing_list", "numeros_no_dominio", "subdominios_excessivos",
+                    "caracteres_especiais", "dns_dinamico", "idade_dominio",
+                    "ssl_valido", "ssl_correspondente",
+                    "redireciona_para_outro_dominio", "redirecionamentos_multiplos",
+                    "similar_a_marca_conhecida", "formulario_detectado",
+                    "campo_sensivel_detectado", "palavras_sensiveis_detectadas"
+                ] %}
+                <td>
+                    {% if key in texto_livre %}
+                        {{ r[key] }}
+                    {% elif key in detectaveis %}
+                        <span class="{{ 'suspeito' if r[key] else 'seguro' }}">
+                            {{ 'Detectado' if r[key] else 'Não detectado' }}
+                        </span>
+                    {% elif key in ["ssl_valido", "ssl_correspondente"] %}
+                        <span class="{{ 'suspeito' if not r[key] else 'seguro' }}">
+                            {{ 'Suspeito' if not r[key] else 'Seguro' }}
+                        </span>
+                    {% else %}
+                        <span class="{{ 'suspeito' if r[key] else 'seguro' }}">
+                            {{ 'Suspeito' if r[key] == True else 'Seguro' }}
+                        </span>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Distribuição de Características Suspeitas</h2>
+    <div style="max-width: 800px; margin: auto;">
+        <canvas id="grafico"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const data = {
+            labels: {{ labels | tojson }},
+            datasets: [{
+                label: 'Ocorrências',
+                data: {{ valores | tojson }},
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        };
+
+        new Chart(
+            document.getElementById('grafico'),
+            config
+        );
+    </script>
+
+    {% else %}
+        <p>Nenhuma URL verificada ainda.</p>
+    {% endif %}
+</body>
+</html>
