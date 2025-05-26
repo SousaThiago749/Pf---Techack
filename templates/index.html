@@ -113,20 +113,33 @@
     <aside>
         <h3>Critérios Analisados</h3>
         <ul>
-            <li><strong>Lista de phishing:</strong> domínios conhecidos por phishing.</li>
-            <li><strong>Números no domínio:</strong> substituições visuais como "g00gle".</li>
-            <li><strong>Subdomínios excessivos:</strong> tentativa de enganar com nomes longos.</li>
-            <li><strong>Caracteres especiais:</strong> uso de "@" ou "%", comum em URLs falsas.</li>
-            <li><strong>DNS dinâmico:</strong> serviços gratuitos usados para esconder origem.</li>
-            <li><strong>Idade do domínio:</strong> domínios novos são mais suspeitos.</li>
-            <li><strong>SSL válido:</strong> segurança básica com HTTPS e certificado válido.</li>
-            <li><strong>Domínio no certificado:</strong> confirma que o site é quem diz ser.</li>
-            <li><strong>Redirecionamento:</strong> URLs que mudam de destino podem esconder fraudes.</li>
-            <li><strong>Marca parecida:</strong> tentativa de se passar por sites legítimos.</li>
-            <li><strong>Formulário:</strong> captura de dados pode ser tentativa de roubo.</li>
-            <li><strong>Campo sensível:</strong> login, email ou senha inseridos no site.</li>
-            <li><strong>Palavras-chave:</strong> termos como “senha” ou “cartão” no conteúdo.</li>
+            <li><strong>Lista de phishing:</strong> se a URL aparece em bases como PhishTank ou OpenPhish, é um forte indicativo de fraude conhecida, confirmada por denúncias anteriores.</li>
+
+            <li><strong>Números no domínio:</strong> substituições como "g00gle" ou "fac3book" são técnicas clássicas de engenharia social, usadas para enganar visualmente o usuário simulando marcas legítimas.</li>
+
+            <li><strong>Subdomínios excessivos:</strong> domínios como `login.paypal.seguranca.site.com` são criados para confundir o usuário, fazendo parecer que está em um site confiável, quando na verdade está em um domínio falso.</li>
+
+            <li><strong>Caracteres especiais:</strong> símbolos como `@`, `%`, `!` ou até URLs com caminhos longos podem mascarar o destino real, redirecionando para páginas maliciosas sem que o usuário perceba.</li>
+
+            <li><strong>DNS dinâmico:</strong> domínios gratuitos como `no-ip`, `duckdns`, entre outros, são usados por atacantes por serem fáceis de criar e trocar, dificultando rastreio e bloqueio.</li>
+
+            <li><strong>Idade do domínio:</strong> sites legítimos geralmente têm domínio antigo. Phishing costuma usar domínios recém-criados para ataques rápidos, antes que sejam denunciados.</li>
+
+            <li><strong>SSL válido:</strong> um certificado SSL inválido pode indicar um site falso, não autorizado, ou mal configurado. A ausência de HTTPS também compromete a privacidade da navegação.</li>
+
+            <li><strong>Domínio no certificado:</strong> mesmo com SSL, se o nome do domínio no certificado não bater com o endereço da URL, o site pode estar se passando por outro (ataques tipo man-in-the-middle).</li>
+
+            <li><strong>Redirecionamento:</strong> phishing costuma usar redirecionamentos para esconder o destino real. Você clica em um link legítimo, mas acaba redirecionado para um site fraudulento.</li>
+
+            <li><strong>Marca parecida:</strong> domínios com nomes similares a marcas conhecidas (ex: `gooogle.com`, `faceb00k.net`) tentam enganar usuários desatentos, simulando confiança e legitimidade.</li>
+
+            <li><strong>Formulário:</strong> sites falsos copiam páginas de login legítimas e capturam os dados digitados pelo usuário, enviando-os diretamente para os atacantes.</li>
+
+            <li><strong>Campo sensível:</strong> se há campos do tipo `senha`, `email`, `cartão`, isso pode indicar que a página tenta capturar dados pessoais ou financeiros.</li>
+
+            <li><strong>Palavras-chave:</strong> termos como “senha”, “confirmação de conta”, “atualização de cartão” são comuns em golpes que pressionam o usuário a fornecer informações rapidamente.</li>
         </ul>
     </aside>
+
 </body>
 </html>
